@@ -16,3 +16,5 @@ UserSettings/
 *.mdb
 *.opendb
 *.VC.db
+.env
+.env.*
