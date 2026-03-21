@@ -1,15 +1,14 @@
 using UnityEngine;
 
+[RequireComponent(typeof(DialogueCameraController))]
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
-    public Vector3 offset = new Vector3(0, 3, -6);
-
-    void LateUpdate()
+    private void Awake()
     {
-        if (target != null)
+        DialogueCameraController controller = GetComponent<DialogueCameraController>();
+        if (controller == null)
         {
-            transform.position = target.position + offset;
+            gameObject.AddComponent<DialogueCameraController>();
         }
     }
 }

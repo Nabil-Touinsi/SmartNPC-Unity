@@ -53,12 +53,12 @@ public static class NPCVisualBuilder
         head.transform.localScale = new Vector3(0.42f, 0.42f, 0.42f);
         head.GetComponent<Renderer>().sharedMaterial = skinMat;
 
-        // Cheveux / chapeau simple
+        // Cheveux
         GameObject hair = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         hair.name = "Hair";
-        hair.transform.SetParent(root.transform);
-        hair.transform.localPosition = new Vector3(0f, 1.86f, -0.02f);
-        hair.transform.localScale = new Vector3(0.44f, 0.28f, 0.44f);
+        hair.transform.SetParent(head.transform);
+        hair.transform.localPosition = new Vector3(0f, 0.26f, -0.02f);
+        hair.transform.localScale = new Vector3(1.05f, 0.66f, 1.05f);
         hair.GetComponent<Renderer>().sharedMaterial = hairMat;
 
         // Bras
@@ -69,7 +69,7 @@ public static class NPCVisualBuilder
         CreateLimb(root.transform, "Sleeve_Left", new Vector3(-0.30f, 1.08f, 0f), new Vector3(0.20f, 0.22f, 0.20f), robeMat);
         CreateLimb(root.transform, "Sleeve_Right", new Vector3(0.30f, 1.08f, 0f), new Vector3(0.20f, 0.22f, 0.20f), robeMat);
 
-        // Socle discret / pieds fusionnés
+        // Base / pieds fusionnés
         GameObject basePart = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         basePart.name = "Base";
         basePart.transform.SetParent(root.transform);
@@ -77,9 +77,9 @@ public static class NPCVisualBuilder
         basePart.transform.localScale = new Vector3(0.34f, 0.08f, 0.34f);
         basePart.GetComponent<Renderer>().sharedMaterial = robeMat;
 
-        // Petits yeux simples
-        CreateEye(root.transform, "Eye_Left", new Vector3(-0.08f, 1.77f, 0.18f));
-        CreateEye(root.transform, "Eye_Right", new Vector3(0.08f, 1.77f, 0.18f));
+        // Yeux : maintenant parentés à la tête pour suivre le regard
+        CreateEye(head.transform, "Eye_Left", new Vector3(-0.19f, 0.05f, 0.43f));
+        CreateEye(head.transform, "Eye_Right", new Vector3(0.19f, 0.05f, 0.43f));
 
         // Désactiver le renderer capsule d'origine si présent
         Renderer npcRenderer = npc.GetComponent<Renderer>();
@@ -88,7 +88,22 @@ public static class NPCVisualBuilder
             npcRenderer.enabled = false;
         }
 
+        AttachLifeController(npc);
+
         Debug.Log("Visuel NPC généré avec succès.");
+    }
+
+    private static void AttachLifeController(GameObject npc)
+    {
+        NPCSimpleLife life = npc.GetComponent<NPCSimpleLife>();
+        if (life == null)
+        {
+            life = npc.AddComponent<NPCSimpleLife>();
+        }
+
+        life.AutoBind();
+
+        EditorUtility.SetDirty(npc);
     }
 
     private static void CreateLimb(Transform parent, string name, Vector3 localPos, Vector3 localScale, Material mat)
@@ -127,6 +142,7 @@ public static class NPCVisualBuilder
         mat.color = color;
         EditorUtility.SetDirty(mat);
         AssetDatabase.SaveAssets();
+
         return mat;
     }
 }

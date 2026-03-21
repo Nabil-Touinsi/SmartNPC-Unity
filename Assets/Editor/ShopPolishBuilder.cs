@@ -19,7 +19,6 @@ public static class ShopPolishBuilder
         Material softWood = CreateOrUpdateMat("Shop_Wood_Mat", new Color(0.55f, 0.35f, 0.22f));
         Material softAccent = CreateOrUpdateMat("Shop_Accent_Mat", new Color(0.78f, 0.60f, 0.30f));
         Material rugMat = CreateOrUpdateMat("Shop_Rug_Mat", new Color(0.41f, 0.22f, 0.15f));
-        Material signMat = CreateOrUpdateMat("Shop_Sign_Mat", new Color(0.30f, 0.18f, 0.10f));
         Material lightMat = CreateOrUpdateMat("Shop_Light_Mat", new Color(0.95f, 0.75f, 0.45f), true);
 
         ApplyMaterialIfFound(root, "Floor", softFloor);
@@ -30,7 +29,6 @@ public static class ShopPolishBuilder
         ApplyMaterialStartsWith(root, "Prop_", softAccent);
 
         CreateOrReplaceRug(root.transform, rugMat);
-        CreateOrReplaceSign(root.transform, signMat);
         CreateOrReplaceCeilingBeams(root.transform, softWood);
         CreateOrReplaceHangingLamps(root.transform, softWood, lightMat);
         CreateOrReplaceNpcSpot(root.transform, rugMat);
@@ -44,6 +42,7 @@ public static class ShopPolishBuilder
     private static void CreateOrReplaceRug(Transform parent, Material rugMat)
     {
         DestroyChildIfExists(parent, "Shop_Rug");
+
         GameObject rug = GameObject.CreatePrimitive(PrimitiveType.Cube);
         rug.name = "Shop_Rug";
         rug.transform.SetParent(parent);
@@ -52,40 +51,10 @@ public static class ShopPolishBuilder
         rug.GetComponent<Renderer>().sharedMaterial = rugMat;
     }
 
-    private static void CreateOrReplaceSign(Transform parent, Material signMat)
-    {
-        DestroyChildIfExists(parent, "Shop_Sign");
-
-        GameObject signRoot = new GameObject("Shop_Sign");
-        signRoot.transform.SetParent(parent);
-
-        GameObject board = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        board.name = "Board";
-        board.transform.SetParent(signRoot.transform);
-        board.transform.position = new Vector3(0f, 3.15f, 5.35f);
-        board.transform.localScale = new Vector3(2.6f, 0.6f, 0.08f);
-        board.GetComponent<Renderer>().sharedMaterial = signMat;
-
-#if UNITY_EDITOR
-        GameObject text = new GameObject("Title");
-        text.transform.SetParent(signRoot.transform);
-        text.transform.position = new Vector3(0f, 3.16f, 5.30f);
-
-        TextMesh tm = text.AddComponent<TextMesh>();
-        tm.text = "SMART NPC SHOP";
-        tm.fontSize = 48;
-        tm.characterSize = 0.08f;
-        tm.anchor = TextAnchor.MiddleCenter;
-        tm.alignment = TextAlignment.Center;
-        tm.color = new Color(0.95f, 0.86f, 0.68f);
-
-        text.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-#endif
-    }
-
     private static void CreateOrReplaceCeilingBeams(Transform parent, Material beamMat)
     {
         DestroyChildIfExists(parent, "Ceiling_Beams");
+
         GameObject root = new GameObject("Ceiling_Beams");
         root.transform.SetParent(parent);
 
@@ -103,6 +72,7 @@ public static class ShopPolishBuilder
     private static void CreateOrReplaceHangingLamps(Transform parent, Material supportMat, Material bulbMat)
     {
         DestroyChildIfExists(parent, "Hanging_Lamps");
+
         GameObject root = new GameObject("Hanging_Lamps");
         root.transform.SetParent(parent);
 
@@ -145,6 +115,7 @@ public static class ShopPolishBuilder
     private static void ImproveLighting(Transform parent)
     {
         Light[] lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+
         foreach (Light l in lights)
         {
             if (l.gameObject.name == "Directional Light")
@@ -170,6 +141,7 @@ public static class ShopPolishBuilder
         }
 
         DestroyImmediateIfFound("NPC_KeyLight");
+
         GameObject key = new GameObject("NPC_KeyLight");
         key.transform.SetParent(parent);
         key.transform.position = new Vector3(0f, 2.2f, 1.3f);
@@ -186,7 +158,8 @@ public static class ShopPolishBuilder
     private static void FrameMainCamera()
     {
         GameObject cam = GameObject.Find("Main Camera");
-        if (cam == null) return;
+        if (cam == null)
+            return;
 
         cam.transform.position = new Vector3(0f, 2.1f, -5.8f);
         cam.transform.rotation = Quaternion.Euler(14f, 0f, 0f);
@@ -198,7 +171,8 @@ public static class ShopPolishBuilder
         if (t != null)
         {
             Renderer r = t.GetComponent<Renderer>();
-            if (r != null) r.sharedMaterial = mat;
+            if (r != null)
+                r.sharedMaterial = mat;
         }
     }
 
@@ -247,6 +221,7 @@ public static class ShopPolishBuilder
 
         EditorUtility.SetDirty(mat);
         AssetDatabase.SaveAssets();
+
         return mat;
     }
-}   
+}
